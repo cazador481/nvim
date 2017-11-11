@@ -48,7 +48,7 @@ NeoBundle 'tpope/vim-dispatch'
 
 "new Filetypes {{{
 NeoBundle 'cazador481/vim-nfo'
-NeoBundle 'cazador481/vim-systemc'
+NeoBundle 'cazador481/vim-systemc', {'on_ft' : ['c', 'cpp']}
 "}}}
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tomtom/tcomment_vim'
@@ -103,8 +103,8 @@ NeoBundle 'Shougo/vimproc', {
 "Better diff handling
 NeoBundle 'chrisbra/vim-diff-enhanced'
 NeoBundle 'Shougo/context_filetype.vim' " perlomni needs
-NeoBundle 'Shougo/deoplete.nvim'
-NeoBundle 'zchee/deoplete-zsh'
+NeoBundle 'Shougo/deoplete.nvim', {'on_i': 1}
+NeoBundle 'zchee/deoplete-zsh', {'on_ft': 'zsh'}
 if !empty($TMUX)
     NeoBundle 'wellle/tmux-complete.vim'
 endif
