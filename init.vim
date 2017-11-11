@@ -37,7 +37,6 @@ NeoBundleFetch 'Shougo/neobundle'
 "General bundles here {{{
 NeoBundle 'benekastah/neomake'
 NeoBundle 'godlygeek/tabular'
-" NeoBundle 'http://github.com/cazador481/vim-systemverilog'
 "file modification commands, like Unlink, Move
 NeoBundle 'tpope/vim-eunuch', { 'on_cmd' : [ 'Rename', 'Unlink', 'Move', 'Remove', 'Chmod', 'Mkdir', 'Find','Locate','Wall','SudoWrite','SudoEdit']}
 
@@ -45,7 +44,7 @@ NeoBundle 'tpope/vim-fugitive', {'augroup' : 'fugitive'}
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-dispatch'
 "should bundle menu
-"NeoBundle 'mbadran/headlights'
+" NeoBundle 'mbadran/headlights'
 
 "new Filetypes {{{
 NeoBundle 'cazador481/vim-nfo'
@@ -81,17 +80,14 @@ NeoBundleLazy 'derekwyatt/vim-protodef'
 autocmd FileType cpp NeoBundleSource vim-protodef
 " NeoBundle 'http://github.com/vim-scripts/FSwitch'
 NeoBundle 'kana/vim-textobj-user'
-NeoBundle 'thinca/vim-textobj-function-perl', {'depends': 'kana/vim-textobj-function'} "perl text object
+NeoBundle 'thinca/vim-textobj-function-perl', {'on_ft': 'perl', 'depends': 'kana/vim-textobj-function'} "perl text object
 NeoBundle 'vimtaku/vim-textobj-sigil', {'depends': 'kana/vim-textobj-user'} "perl text object
 NeoBundle 'paulhybryant/vim-textobj-path', {'depends': 'kana/vim-textobj-user'} "perl text object
-"NeoBundle 'http://github.com/bling/vim-bufferline'
 NeoBundleLazy 'xolox/vim-reload', {'depends' : 'xolox/vim-misc' }
 autocmd FileType vim NeoBundleSource vim-reload
 " NeoBundle 'mattn/gist-vim', {'depends' : 'mattn/webapi-vim' }
 
-NeoBundleLazy 'vim-scripts/dbext.vim'
-autocmd FileType sql NeoBundleSource dbext.vim
-" NeoBundle 'tomtom/quickfixsigns_vim'
+NeoBundle 'vim-scripts/dbext.vim', { 'on_ft' : 'sql'}
 
 
 "
@@ -109,7 +105,9 @@ NeoBundle 'chrisbra/vim-diff-enhanced'
 NeoBundle 'Shougo/context_filetype.vim' " perlomni needs
 NeoBundle 'Shougo/deoplete.nvim'
 NeoBundle 'zchee/deoplete-zsh'
-NeoBundle 'wellle/tmux-complete.vim'
+if !empty($TMUX)
+    NeoBundle 'wellle/tmux-complete.vim'
+endif
 
 NeoBundle 'Shougo/neco-syntax'
 NeoBundle 'Shougo/neco-vim'
@@ -117,42 +115,41 @@ NeoBundle 'Shougo/neco-vim'
 "}}}
 "
 "{{{ Python budles
-NeoBundle 'zchee/deoplete-jedi'
-NeoBundle 'klen/python-mode.git'
+NeoBundle 'zchee/deoplete-jedi', { 'on_ft' : 'python'}
+NeoBundle 'klen/python-mode.git', { 'on_ft' : 'python'}
 let g:pymode_rope_completion=0
 let g:pymode_rope_completion_on_dot=0
 "}}}
 NeoBundle 'airblade/vim-rooter' " finds the root dir
 "
 "perl bundles {{{
-NeoBundle 'https://raw.githubusercontent.com/thoughtstream/Damian-Conway-s-Vim-Setup/master/plugin/trackperlvars.vim', {'type' : 'raw' ,'script_type' : 'plugin'}
-NeoBundle 'vim-perl/vim-perl'
+NeoBundle 'https://raw.githubusercontent.com/thoughtstream/Damian-Conway-s-Vim-Setup/master/plugin/trackperlvars.vim', {'on_ft': 'perl', 'type' : 'raw' ,'script_type' : 'plugin'}
+NeoBundle 'vim-perl/vim-perl', {'on_ft': 'perl'}
 
 "deoplete perl omni completion, better than anything out there at themoment, still a little flaky
-NeoBundle 'cazador481/perlomni.vim'
+NeoBundle 'cazador481/perlomni.vim', {'on_ft': 'perl'}
 
-NeoBundle 'catalinciurea/perl-nextmethod' "enables [M, [m, ]M,]m
+NeoBundle 'catalinciurea/perl-nextmethod', {'on_ft': 'perl'} "enables [M, [m, ]M,]m
 "NeoBundle 'http://github.com/cazador481/vim-cute-perl.git'
 "}}}
 
 "{{{color schemes
 NeoBundle 'cazador481/ea_color'
-NeoBundle 'tpope/vim-vividchalk'
-NeoBundle 'chriskempson/vim-tomorrow-theme'
-NeoBundle 'godlygeek/csapprox'
-NeoBundle 'sjl/badwolf'
+" NeoBundle 'tpope/vim-vividchalk'
+" NeoBundle 'chriskempson/vim-tomorrow-theme'
+" NeoBundle 'godlygeek/csapprox'
+" NeoBundle 'sjl/badwolf'
 " NeoBundle 'w0ng/vim-hybrid'
 "}}}
 
-NeoBundle 'avakhov/vim-yaml'
+NeoBundle 'avakhov/vim-yaml', {'on_ft': 'yaml'}
 NeoBundle 'wellle/targets.vim' " additional  text objects
 NeoBundle 'tpope/vim-obsession'
 "NeoBundle 'jszakmeister/vim-togglecursor'
 NeoBundle 'theevocater/vim-perforce'
-NeoBundle 'nhooyr/neoman.vim'
 NeoBundle 'sjl/splice.vim.git'
 NeoBundle 'vim-scripts/AnsiEsc.vim' "evals ansi escape codes.
-NeoBundle 'junegunn/fzf.vim'
+NeoBundle 'junegunn/fzf.vim', {'on_cmd' : 'Files'}
 
 NeoBundle 'autozimu/LanguageClient-neovim'
 " shows what the hi is under the cursor
@@ -171,7 +168,7 @@ if neobundle#is_installed('ea_color') "{{{
 endif "}}}
 set visualbell
 "set termguicolors
-set tags=tags;
+set tags=tags
 set clipboard^=unnamedplus "uses x-11 clipboard, stores in middle mouse
 set ruler
 set cmdheight=2
