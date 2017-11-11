@@ -1,0 +1,6 @@
+bundle
+.init.vim-rplugin~
+undodir
+.ropeproject
+.*~
+.netrwhist
