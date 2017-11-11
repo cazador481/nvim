@@ -39,7 +39,7 @@ NeoBundle 'benekastah/neomake'
 NeoBundle 'godlygeek/tabular'
 " NeoBundle 'http://github.com/cazador481/vim-systemverilog'
 "file modification commands, like Unlink, Move
-NeoBundle 'tpope/vim-eunuch', { 'on_cmd' : [ 'Rename', 'Unlink', 'Move', 'Remove', 'Chmod', 'Mdir', 'Find','Locate','Wall','SudoWrite','SudoEdit']}
+NeoBundle 'tpope/vim-eunuch', { 'on_cmd' : [ 'Rename', 'Unlink', 'Move', 'Remove', 'Chmod', 'Mkdir', 'Find','Locate','Wall','SudoWrite','SudoEdit']}
 
 NeoBundle 'tpope/vim-fugitive', {'augroup' : 'fugitive'}
 NeoBundle 'tpope/vim-surround'
@@ -617,7 +617,7 @@ endfunction
 "}}}
 
 "{{{ FZF
-" let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 "}}}
 
 "{{{ Self defined file types
