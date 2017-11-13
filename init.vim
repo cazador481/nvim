@@ -58,14 +58,17 @@ NeoBundleLazy 'brauner/vimtux'
 NeoBundleLazy 'christoomey/vim-tmux-navigator'
 NeoBundleLazy 'tmux-plugins/vim-tmux-focus-events'
 NeoBundle 'tmux-plugins/vim-tmux'
+
 if !empty($TMUX)
-        NeoBundleSource vimtux
-        NeoBundleSource vim-tmux-navigator
-        NeoBundleSource vim-tmux-focus-events
-function! Tmux_display()
-    let $DISPLAY=systemlist("tmux show-environment DISPLAY|cut -d'=' -f 2")[0]
-endfunc
-autocmd FocusGained * call Tmux_display()
+    NeoBundleSource vimtux
+    NeoBundleSource vim-tmux-navigator
+    NeoBundleSource vim-tmux-focus-events
+
+    " update display environment
+    function! Tmux_display()
+        let $DISPLAY=systemlist("tmux show-environment DISPLAY|cut -d'=' -f 2")[0]
+    endfunc
+    autocmd FocusGained * call Tmux_display()
 
 endif
 "}}}
