@@ -460,11 +460,6 @@ if executable("ag")
     "}}}
 endif "}}}
 
-if neobundle#tap('syntastic') "{{{
-    let syntastic_perl_checkers=['perlcritic', 'perl']
-    let g:syntastic_perl_lib_path=['./lib', '/home/scratch.eash/NV-rtltime/lib/']
-    let g:syntastic_enable_perl_checker=0
-endif "}}}
 if neobundle#tap('vim-buftabline') "{{{
     let g:buftabline_numbers=1 " enable numbering
 
