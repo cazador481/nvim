@@ -18,7 +18,6 @@ if !filereadable(bundle_readme)
     if has("unix")
         silent execute '!mkdir -p ' . bundle_path
         silent execute '!git clone https://github.com/Shougo/neobundle.vim.git ' . bundle_path. '/neobundle'
-        " silent !git clone https://github.com/Shougo/neobundle.vim.git $bundle_path/neobundle
     elseif (match(hostname(),"ELASH1-MOBL") >=0)
         silent !mkdir /home/elash1/.nvim/bundle
         silent !git clone https://github.com/Shougo/neobundle.vim.git /home/elash1/.nvim/bundle/neobundle
@@ -217,7 +216,7 @@ set shiftwidth=4
 set softtabstop=4
 set expandtab
 set copyindent
-" set cindent
+set cindent
 "}}}
 
 "folding {{{
@@ -536,6 +535,7 @@ function! PerlCurrentSubName() "{{{
     else
         let s:subname = '(not in sub)'
     endif
+
     call cursor(s:currline, s:currcol)
     echo s:subname
     return s:subname
