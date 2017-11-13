@@ -150,7 +150,7 @@ NeoBundle 'tpope/vim-obsession'
 "NeoBundle 'jszakmeister/vim-togglecursor'
 NeoBundle 'theevocater/vim-perforce'
 NeoBundle 'sjl/splice.vim.git'
-NeoBundle 'vim-scripts/AnsiEsc.vim' "evals ansi escape codes.
+NeoBundle 'vim-scripts/AnsiEsc.vim', {'on_cmd': ['AnsiEsc', 'AnsiEsc!'} "evals ansi escape codes.
 NeoBundle 'junegunn/fzf.vim', {'on_cmd' : 'Files'}
 
 NeoBundle 'autozimu/LanguageClient-neovim'
