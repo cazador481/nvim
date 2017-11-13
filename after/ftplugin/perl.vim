@@ -7,3 +7,6 @@ let perl_fold_anonymous_subs=1
 let perl_include_pod=1
 
 nmap cv :call RenameVariable()<cr>
+
+set errorformat+=%m\ at\ %f\ line\ %l
+set errorformat+=%m\ at\ %f\ line\ %l\.

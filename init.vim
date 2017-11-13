@@ -58,7 +58,7 @@ NeoBundleLazy 'brauner/vimtux'
 NeoBundleLazy 'christoomey/vim-tmux-navigator'
 NeoBundleLazy 'tmux-plugins/vim-tmux-focus-events'
 NeoBundle 'tmux-plugins/vim-tmux'
-if !empty($TMUX)
+if !empty($TMUX)'
         NeoBundleSource vimtux
         NeoBundleSource vim-tmux-navigator
         NeoBundleSource vim-tmux-focus-events
@@ -176,7 +176,6 @@ set backspace=2 "make backspace work normal
 set showmatch
 set so=10
 set background=dark
-let g:load_doxygen_syntax=1
 set number
 set ignorecase
 set diffopt+=iwhite " ignores white space
@@ -203,8 +202,10 @@ map <Enter> o<Esc>
 "undo file {{{
 set undofile
 
-call mkdir($XDG_CACHE_HOME. "/nvim/undodir", "p", 0700)
-set undodir=$XDG_CACHE_HOME/nvim/undodir
+if !empty($XDG_CACHE_HOME)
+    call mkdir($XDG_CACHE_HOME. "/nvim/undodir", "p", 0700)
+    set undodir=$XDG_CACHE_HOME/nvim/undodir
+endif
 "}}}
 
 "indent {{{
@@ -225,6 +226,7 @@ set wildmenu
 set wildmode=list:longest,full
 "}}}
 set mouse=a "enables mouse mode in console
+
 "Get completion to work sanely {{{
 "inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<c-g>u\<cr>"
 inoremap <expr> <c-n> pumvisible() ? "\<lt>c-n>" : "\<lt>c-n>\<lt>c-r>=pumvisible() ? \"\\<lt>down>\" : \"\"\<lt>cr>" 
@@ -232,6 +234,7 @@ inoremap <expr> <m-;> pumvisible() ? "\<lt>c-n>" : "\<lt>c-x>\<lt>c-o>\<lt>c-n>\
 set completeopt=menuone,noinsert,noselect
 " set completeopt=longest,menuone
 "}}}
+
 "temp directory {{{ 
 if has("unix")
     set dir=/tmp "sets the temp directory for swap files
@@ -389,7 +392,6 @@ if neobundle#tap('dbext.vim') "{{{
 
 endif "}}}
 
-" Disable auto comments
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o "Makes copying and pasting using mosh work better
 
 
@@ -408,12 +410,14 @@ let g:neomake_perl_enabled_makers=['perlc', 'perlcritic']
             " \ 'arg' : ['--quiet --nocolor --verbose "\%s:\%f:\%l:\%c:(\%s) \%m (\%e)\n"'],
 "}}}
 
-"makes jk go by line, except when proceded by number
+"{{{makes jk go by line, except when proceded by number
 function! LineMotion(dir)
     execute "normal! " . (v:count1 > 1 ? "m'" . v:count1 : "g") . a:dir
 endfunction
+
 nnoremap <silent> j :<c-u>call LineMotion("j")<cr>
 nnoremap <silent> k :<c-u>call LineMotion("k")<cr>
+"}}}
 
 " if neobundle#tap('vim-rooter') "{{{
     let g:rooter_patterns = ['dist.ini', 'TOT', '.git', '.git/', '.p4config']
@@ -429,8 +433,6 @@ if !exists(":DiffOrig")
 endif
 "}}}
 
-"text template
- au BufNewFile,BufRead *.tt setf tt2
 
 command! -nargs=1 Perldoc call Perldoc(<f-args>) 
 function! Perldoc(Method)
@@ -510,9 +512,11 @@ let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 "{{{ Self defined file types
 au BufRead,BufNewFile *.asb set filetype=asb
+"text template
+au BufNewFile,BufRead *.tt setf tt2
 "}}}
 
-"{{{ Python paths
+"{{{ Python paths for work
 if filereadable('/home/utils/Python-2.7.9/bin/python') 
     let g:python_host_prog='/home/utils/Python-2.7.9/bin/python'
     let g:python3_host_prog='/home/utils/Python-3.4.2/bin/python3'
