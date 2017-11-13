@@ -58,7 +58,7 @@ NeoBundleLazy 'brauner/vimtux'
 NeoBundleLazy 'christoomey/vim-tmux-navigator'
 NeoBundleLazy 'tmux-plugins/vim-tmux-focus-events'
 NeoBundle 'tmux-plugins/vim-tmux'
-if !empty($TMUX)'
+if !empty($TMUX)
         NeoBundleSource vimtux
         NeoBundleSource vim-tmux-navigator
         NeoBundleSource vim-tmux-focus-events
@@ -167,7 +167,7 @@ if neobundle#is_installed('ea_color') "{{{
     color ea
 endif "}}}
 set visualbell
-"set termguicolors
+set termguicolors
 set tags=tags
 set clipboard^=unnamedplus "uses x-11 clipboard, stores in middle mouse
 set ruler
@@ -267,7 +267,6 @@ if neobundle#tap('ultisnips') " {{{
     let g:deoplete#ignore_sources = ['ultisnips']
 endif
 "}}}
-
 
 if neobundle#tap('rainbow') "{{{
     let g:rainbow_active=1
