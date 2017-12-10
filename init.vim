@@ -152,9 +152,9 @@ NeoBundle 'theevocater/vim-perforce'
 NeoBundle 'sjl/splice.vim.git'
 NeoBundle 'vim-scripts/AnsiEsc.vim' "evals ansi escape codes.
 NeoBundle 'junegunn/fzf'
-NeoBundle 'junegunn/fzf.vim' , {'on_cmd' : 'Files', 'Ag', 'Lines', 'Buffers'}
+NeoBundle 'junegunn/fzf.vim', {'on_cmd': ['Files', 'Ag', 'Lines', 'Buffers']}
 
-
+NeoBundle 'jiangmiao/auto-pairs.git'
 NeoBundle 'autozimu/LanguageClient-neovim'
 " shows what the hi is under the cursor
 " NeoBundle 'kergoth/vim-hilinks'
