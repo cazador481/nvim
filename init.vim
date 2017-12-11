@@ -35,7 +35,7 @@ NeoBundleFetch 'Shougo/neobundle'
 "Add your bundles here
 "General bundles here {{{
 NeoBundle 'benekastah/neomake'
-NeoBundle 'godlygeek/tabular'
+NeoBundle 'godlygeek/tabular', { 'on_cmd': 'Tabularize'}
 "file modification commands, like Unlink, Move
 NeoBundle 'tpope/vim-eunuch', { 'on_cmd' : [ 'Rename', 'Unlink', 'Move', 'Remove', 'Chmod', 'Mkdir', 'Find','Locate','Wall','SudoWrite','SudoEdit']}
 
@@ -78,14 +78,13 @@ NeoBundle 'SirVer/ultisnips'
 "NeoBundle 'http://github.com/nathanaelkane/vim-indent-guides.git'
 NeoBundle 'perrywky/vim-matchit'
 NeoBundle 'kurkale6ka/vim-pairs'
-NeoBundleLazy 'derekwyatt/vim-protodef'
-autocmd FileType cpp NeoBundleSource vim-protodef
+NeoBundle 'derekwyatt/vim-protodef', { 'on_ft': ['c', 'cpp', 'h']}
 " NeoBundle 'http://github.com/vim-scripts/FSwitch'
 NeoBundle 'kana/vim-textobj-user'
-NeoBundle 'thinca/vim-textobj-function-perl', {'on_ft': 'perl', 'depends': 'kana/vim-textobj-function'} "perl text object
-NeoBundle 'vimtaku/vim-textobj-sigil', {'depends': 'kana/vim-textobj-user'} "perl text object
-NeoBundle 'paulhybryant/vim-textobj-path', {'depends': 'kana/vim-textobj-user'} "perl text object
-NeoBundleLazy 'xolox/vim-reload', {'depends' : 'xolox/vim-misc' }
+NeoBundle 'thinca/vim-textobj-function-perl' , {'depends': 'kana/vim-textobj-function','on_ft': 'perl'} " perl text object
+NeoBundle 'vimtaku/vim-textobj-sigil'        , {'depends': 'kana/vim-textobj-user'}
+NeoBundle 'paulhybryant/vim-textobj-path'    , {'depends': 'kana/vim-textobj-user'}
+NeoBundleLazy 'xolox/vim-reload'             , {'depends': 'xolox/vim-misc' }
 autocmd FileType vim NeoBundleSource vim-reload
 " NeoBundle 'mattn/gist-vim', {'depends' : 'mattn/webapi-vim' }
 
@@ -93,13 +92,13 @@ NeoBundle 'vim-scripts/dbext.vim', { 'on_ft' : 'sql'}
 
 
 "
-NeoBundle 'luochen1990/rainbow'
+" NeoBundle 'luochen1990/rainbow'
 NeoBundle 'Shougo/vimproc', {
-\ 'build' : {
+\ 'build'       : {
 \     'windows' : 'make -f make_mingw32.mak',
-\     'cygwin' : 'make -f make_cygwin.mak',
-\     'mac' : 'make -f make_mac.mak',
-\     'unix' : 'make -f make_unix.mak',
+\     'cygwin'  : 'make -f make_cygwin.mak',
+\     'mac'     : 'make -f make_mac.mak',
+\     'unix'    : 'make -f make_unix.mak',
 \    }, }
 "NeoBundle 'vim-scripts/octave.vim--'
 "Better diff handling
@@ -149,9 +148,9 @@ NeoBundle 'wellle/targets.vim' " additional  text objects
 NeoBundle 'tpope/vim-obsession'
 "NeoBundle 'jszakmeister/vim-togglecursor'
 NeoBundle 'theevocater/vim-perforce'
-NeoBundle 'sjl/splice.vim.git'
-NeoBundle 'vim-scripts/AnsiEsc.vim', {'on_cmd': ['AnsiEsc', 'AnsiEsc!'} "evals ansi escape codes.
-NeoBundle 'junegunn/fzf.vim', {'on_cmd' : 'Files'}
+NeoBundle 'sjl/splice.vim.git'      , {'on_cmd': 'SpliceInit'}
+NeoBundle 'vim-scripts/AnsiEsc.vim' , {'on_cmd': ['AnsiEsc'    , 'AnsiEsc!']} "evals ansi escape codes.
+NeoBundle 'junegunn/fzf.vim'        , {'on_cmd' : ['Files'     , 'Buffers', 'Lines','Ag']}
 
 NeoBundle 'autozimu/LanguageClient-neovim'
 " shows what the hi is under the cursor
@@ -183,6 +182,19 @@ set ignorecase
 set diffopt+=iwhite " ignores white space
 set diffopt+=icase " ignores case
 set diffopt+=filler " create filler lines
+set diffexpr=DiffW()
+function DiffW()
+  let opt = ""
+   if &diffopt =~ "icase"
+     let opt = opt . "-i "
+   endif
+   if &diffopt =~ "iwhite"
+     let opt = opt . "-w " " swapped vim's -b with -w
+   endif
+   silent execute "!diff -a --binary " . opt .
+     \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
+endfunction
+
 set laststatus=2
 set suffixesadd+=.gz
 set hidden "allows buffers to be hidden while having unsaved changes
@@ -545,6 +557,6 @@ endfunction
 let g:LanguageClient_serverCommands = {
             \ 'perl': ['/home/eash/scripts/Language-Server/bin/slp.pl'],
             \}
-let g:LanguageClient_autoStart=1
+let g:LanguageClient_autoStart=0
 
 " vim: set fdm=marker:
