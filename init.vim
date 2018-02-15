@@ -67,7 +67,11 @@ if !empty($TMUX)
     function! Tmux_display()
         let $DISPLAY=systemlist("tmux show-environment DISPLAY|cut -d'=' -f 2")[0]
     endfunc
-    autocmd FocusGained * call Tmux_display()
+
+    augroup TMUX_DISPLAY_GROUP
+        au!
+        autocmd FocusGained * call Tmux_display()
+    augroup end
 
 endif
 "}}}
@@ -155,6 +159,11 @@ NeoBundle 'junegunn/fzf.vim'        , {'on_cmd' : ['Files'     , 'Buffers', 'Lin
 
 NeoBundle 'jiangmiao/auto-pairs.git'
 NeoBundle 'autozimu/LanguageClient-neovim'
+NeoBundle 'embear/vim-localvimrc'
+let g:localvimrc_ask=0
+let g:localvimrc_whitelist=['/home/eash/.*','/home/scratch.eash/.*']
+let g:localvimrc_sandbox=0
+
 " shows what the hi is under the cursor
 " NeoBundle 'kergoth/vim-hilinks'
 call neobundle#end()
@@ -204,9 +213,9 @@ set nohlsearch  "turns off hlsearch, make default like vim
 set noincsearch
 set sidescroll=1 " scrolls by one when you go left on no wordwrap
 if has('nvim')
-    set ttimeout
-    set ttimeoutlen=0
-    set matchtime=0
+    set ttimeoutlen =50
+    set timeoutlen  =100
+    set matchtime   =0
 endif
 "general things to speed up vim
 set lazyredraw
@@ -373,10 +382,10 @@ nnoremap <C-LEFT> :bp<CR>
 nnoremap <C-RIGHT> :bn<CR>
 "}}}
 "{{{ middle mouse map
-map <S-Insert> <MiddleMouse>
-map! <S-Insert> <MiddleMouse>
-map <C-S-Insert> <MiddleMouse>
-map! <C-S-Insert> <MiddleMouse>
+noremap <S-Insert> <MiddleMouse>
+noremap! <S-Insert> <MiddleMouse>
+noremap <C-S-Insert> <MiddleMouse>
+noremap! <C-S-Insert> <MiddleMouse>
 "}}}
 "{{{ use silver search
     let g:unite_source_rec_async_command= ['ag', '--nocolor', '--nogroup','-g', '']
@@ -436,6 +445,7 @@ nnoremap <silent> k :<c-u>call LineMotion("k")<cr>
 
 " if neobundle#tap('vim-rooter') "{{{
     let g:rooter_patterns = ['dist.ini', 'TOT', '.git', '.git/', '.p4config']
+    let g:rooter_use_lcd = 1
 " endif "}}}
 
 "{{{ DiffOrig
@@ -561,4 +571,13 @@ let g:LanguageClient_serverCommands = {
             \}
 let g:LanguageClient_autoStart=0
 
+"{{{ autopair
+
+let g:AutoPairsMultilineClose=0
+
+"}}}
+
+if has ('nvim')
+    let $VISUAL='nvr -cc split --remote-wait'
+endif
 " vim: set fdm=marker:
