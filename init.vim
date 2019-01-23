@@ -66,6 +66,8 @@ if !empty($TMUX)
     " update display environment
     function! Tmux_display()
         let $DISPLAY=systemlist("tmux show-environment DISPLAY|cut -d'=' -f 2")[0]
+        let $SSH_CLIENT=systemlist("tmux show-environment SSH_CLIENT|cut -d'=' -f 2")[0]
+        let $SSH_CONNECTION=systemlist("tmux show-environment SSH_CONNECTION|cut -d'=' -f 2")[0]
     endfunc
 
     augroup TMUX_DISPLAY_GROUP
