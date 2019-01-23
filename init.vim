@@ -1,6 +1,5 @@
 "autoinstall neobundle {{{
 
-
 let g:neobundle#types#git#default_protocol='https'
 let iCanHazBundle=1
 if (empty($XDG_CONFIG_HOME))
@@ -55,6 +54,8 @@ NeoBundle 'tomtom/tcomment_vim'
 "TODO check for TMUX env set to enable
 NeoBundleLazy 'brauner/vimtux'
 NeoBundleLazy 'christoomey/vim-tmux-navigator'
+" Disable tmux navigator when zooming the Vim pane
+let g:tmux_navigator_disable_when_zoomed = 1
 NeoBundleLazy 'tmux-plugins/vim-tmux-focus-events'
 NeoBundle 'tmux-plugins/vim-tmux'
 
@@ -63,7 +64,7 @@ if !empty($TMUX)
     NeoBundleSource vim-tmux-navigator
     NeoBundleSource vim-tmux-focus-events
 
-    " update display environment
+    " update display environment and SSH env variables
     function! Tmux_display()
         let $DISPLAY=systemlist("tmux show-environment DISPLAY|cut -d'=' -f 2")[0]
         let $SSH_CLIENT=systemlist("tmux show-environment SSH_CLIENT|cut -d'=' -f 2")[0]
@@ -83,11 +84,19 @@ NeoBundle 'ap/vim-buftabline'
 NeoBundle 'SirVer/ultisnips'
 "NeoBundle 'http://github.com/nathanaelkane/vim-indent-guides.git'
 NeoBundle 'perrywky/vim-matchit'
-NeoBundle 'kurkale6ka/vim-pairs'
+NeoBundle 'tmsvg/pear-tree'
+let g:pear_tree_tree_smart_openers = 1
+let g:pear_tree_smart_closers = 1
+let g:pear_tree_smart_backspace = 0 
+
+" NeoBundle 'kurkale6ka/vim-pairs'  "Punctuation text objects
+" let g:AutoPairsMultilineClose=0
+
 NeoBundle 'derekwyatt/vim-protodef', { 'on_ft': ['c', 'cpp', 'h']}
 " NeoBundle 'http://github.com/vim-scripts/FSwitch'
 NeoBundle 'kana/vim-textobj-user'
 NeoBundle 'thinca/vim-textobj-function-perl' , {'depends': 'kana/vim-textobj-function','on_ft': 'perl'} " perl text object
+NeoBundle 'glts/vim-textobj-comment'        , {'depends': 'kana/vim-textobj-user'}
 NeoBundle 'vimtaku/vim-textobj-sigil'        , {'depends': 'kana/vim-textobj-user'}
 NeoBundle 'paulhybryant/vim-textobj-path'    , {'depends': 'kana/vim-textobj-user'}
 NeoBundleLazy 'xolox/vim-reload'             , {'depends': 'xolox/vim-misc' }
@@ -122,7 +131,7 @@ NeoBundle 'Shougo/neco-vim'
 "}}}
 "
 "{{{ Python budles
-NeoBundle 'zchee/deoplete-jedi', { 'on_ft' : 'python'}
+" NeoBundle 'zchee/deoplete-jedi', { 'on_ft' : 'python'}
 NeoBundle 'klen/python-mode.git', { 'on_ft' : 'python'}
 let g:pymode_rope_completion=0
 let g:pymode_rope_completion_on_dot=0
@@ -160,7 +169,7 @@ NeoBundle 'junegunn/fzf'
 NeoBundle 'junegunn/fzf.vim'        , {'on_cmd' : ['Files'     , 'Buffers', 'Lines','Ag']}
 
 NeoBundle 'jiangmiao/auto-pairs.git'
-NeoBundle 'autozimu/LanguageClient-neovim'
+"NeoBundle 'autozimu/LanguageClient-neovim'
 NeoBundle 'embear/vim-localvimrc'
 let g:localvimrc_ask=0
 let g:localvimrc_whitelist=['/home/eash/.*','/home/scratch.eash/.*']
@@ -168,6 +177,8 @@ let g:localvimrc_sandbox=0
 
 " shows what the hi is under the cursor
 " NeoBundle 'kergoth/vim-hilinks'
+NeoBundle 'vim-vdedebug/vdebug'
+
 call neobundle#end()
 "
 if neobundle#tap('neobundle')
@@ -176,7 +187,6 @@ endif
 set exrc
 filetype plugin indent on
 
-syntax on
 if neobundle#is_installed('ea_color') "{{{
     color ea
 endif "}}}
@@ -184,19 +194,24 @@ set visualbell
 set termguicolors
 set tags=tags
 set clipboard^=unnamedplus "uses x-11 clipboard, stores in middle mouse
-set ruler
+set ruler " shows column, line number location 
 set cmdheight=2
 set backspace=2 "make backspace work normal
 set showmatch
 set so=10
 set background=dark
 set number
-set ignorecase
+set smartcase
+
+set equalalways
+
+set isfname-==
+
 set diffopt+=iwhite " ignores white space
 set diffopt+=icase " ignores case
 set diffopt+=filler " create filler lines
 set diffexpr=DiffW()
-function DiffW()
+function! DiffW()
   let opt = ""
    if &diffopt =~ "icase"
      let opt = opt . "-i "
@@ -214,11 +229,11 @@ set hidden "allows buffers to be hidden while having unsaved changes
 set nohlsearch  "turns off hlsearch, make default like vim
 set noincsearch
 set sidescroll=1 " scrolls by one when you go left on no wordwrap
-if has('nvim')
-    set ttimeoutlen =50
-    set timeoutlen  =100
-    set matchtime   =0
-endif
+set linebreak " this causes the wrapping to happen at the word boundary 
+"    set ttimeoutlen =50
+set timeoutlen  =300  " How mutch to wait after leaderkey to timeout
+"    set matchtime   =0
+"endif
 "general things to speed up vim
 set lazyredraw
 set synmaxcol=255 " syntax coloring long lines slows down the word
@@ -241,11 +256,12 @@ set shiftwidth=4
 set softtabstop=4
 set expandtab
 set copyindent
-set cindent
+set autoindent
 "}}}
 
 "folding {{{
 set fdo +=jump " Enable opening of folds always
+set fdo +=insert
 
 set foldenable
 set foldmethod=syntax
@@ -262,11 +278,24 @@ set completeopt=menuone,noinsert,noselect
 " set completeopt=longest,menuone
 "}}}
 
+"terminal configuration {{{
+if has('nvim')
+   augroup TerminalStuff
+        "Clear old autocommands 
+       au!
+       autocmd TermOpen * setlocal nonumber norelativenumber
+   augroup END
+endif
+
+"}}}
+
 "temp directory {{{ 
-if has("unix")
-    set dir=/tmp "sets the temp directory for swap files
-else
-    set dir=$TEMP
+if ! has('nvim')
+    if has("unix")
+        set dir=/tmp "sets the temp directory for swap files
+    else
+        set dir=$TEMP
+    endif
 endif
 "}}}
 
@@ -349,8 +378,9 @@ endif
 
 if neobundle#tap('deoplete.nvim') "{{{
     
-    " call deoplete#enable_logging("DEBUG","/tmp/deoplete")
+    let g:deoplete#enable_profile = 1
 	let g:deoplete#enable_at_startup= 1
+    "call deoplete#enable_logging("DEBUG","/tmp/deoplete.log")
     let g:deocomplete#auto_completion_start_length=0
     let g:deoplete#ignore_sources={}
     let g:deoplete#ignore_sources._=['omni'] "disable omni source
@@ -370,7 +400,8 @@ endif
 "}}}
 
 "quick saving {{{
-nmap <silent> <Leader>w :update<CR>
+map <silent> <Leader>w :update<CR>
+imap <silent> <Leader>w <C-o>:update<CR>
 "}}}
 
 "black hole mapping {{{
@@ -383,6 +414,8 @@ set hidden
 nnoremap <C-LEFT> :bp<CR>
 nnoremap <C-RIGHT> :bn<CR>
 "}}}
+"
+
 "{{{ middle mouse map
 noremap <S-Insert> <MiddleMouse>
 noremap! <S-Insert> <MiddleMouse>
@@ -460,42 +493,28 @@ if !exists(":DiffOrig")
 endif
 "}}}
 
+command! -nargs=* Perldoc call Perldoc(<f-args>) 
+function! Perldoc(...)
 
-command! -nargs=1 Perldoc call Perldoc(<f-args>) 
-function! Perldoc(Method)
-    let tmp=tempname()
-    call system("perldoc -onroff -d ".tmp." ".a:Method)
-    if (v:shell_error)
-        echom "Could not find docs for ".a:Method
-        return
+    if !exists("a:1")
+        call Perldoc(expand('<cword>'))
+    else
+        let tmp=tempname()
+        let method=a:1
+        call system("nv_perldoc -onroff -d ".tmp." ".method)
+        if (v:shell_error)
+            echom "Could not find docs for ".method
+            return
+        endif
+        " silent exec "!nv_perldoc -onroff -d ".tmp a:Method
+        exec "Man ".tmp
+        exec "file man://".method
+        call delete(tmp)
+        set buflisted
+        setlocal keywordprg=:Perldoc
     endif
-    " silent exec "!perldoc -onroff -d ".tmp a:Method
-    exec "Nman ".tmp
-    exec "file man://".a:Method
-    call delete(tmp)
-    set buflisted
     
 endfunc
-
-function! Get_pagePerldoc(bang, editcmd, ...) abort
-  if a:0 > 2
-    call s:error('too many arguments')
-    return
-  elseif a:0 == 2
-    let sect = a:000[0]
-    let page = a:000[1]
-  else
-    " fpage is a string like 'printf(2)' or just 'printf'
-    " if no argument, use the word under the cursor
-    let fpage = get(a:000, 0, expand('<cWORD>'))
-    if empty(fpage)
-      call s:error('no WORD under cursor')
-      return
-    endif
-    call Perldoc(expand('<cWORD>'))
-  endif
-endfunction
-
 
 "{{{=====[ Emphasize typical mistakes in Vim and Perl files ]=========
 
@@ -546,7 +565,7 @@ au BufNewFile,BufRead *.tt setf tt2
 "{{{ Python paths for work
 if filereadable('/home/utils/Python-2.7.9/bin/python') 
     let g:python_host_prog='/home/utils/Python-2.7.9/bin/python'
-    let g:python3_host_prog='/home/utils/Python-3.4.2/bin/python3'
+    let g:python3_host_prog='/home/utils/Python-3.6.1/bin/python3'
     let g:deoplete#sources#jedi#python_path=g:python3_host_prog
 endif
 "}}}
@@ -572,12 +591,6 @@ let g:LanguageClient_serverCommands = {
             \ 'perl': ['/home/eash/scripts/Language-Server/bin/slp.pl'],
             \}
 let g:LanguageClient_autoStart=0
-
-"{{{ autopair
-
-let g:AutoPairsMultilineClose=0
-
-"}}}
 
 if has ('nvim')
     let $VISUAL='nvr -cc split --remote-wait'
