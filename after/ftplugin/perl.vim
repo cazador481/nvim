@@ -53,3 +53,25 @@ function! Get_pagePerldoc(bang, editcmd, ...) abort
   endif
 endfunction
 
+
+" read in .libcustom to add path info to perl
+if !empty(glob(".libcustom"))
+    for line in readfile(".libcustom")
+        execute "setlocal path+=".line
+    endfor
+endif
+
+function! PerlDebug(cmd)
+    
+    let $DEBUG_PATH= '/home/eash/download/Komodo-PerlRemoteDebugging-8.0.2-78971-linux-x86_64/'
+    if empty($PERL5LIB)
+        let $PERL5LIB='/home/eash/download/Komodo-PerlRemoteDebugging-8.0.2-78971-linux-x86_64/'
+    else
+        let $PERL5LIB='/home/eash/download/Komodo-PerlRemoteDebugging-8.0.2-78971-linux-x86_64/:'.$PERL5LIB
+    endif
+    let $PERL5DB="BEGIN {require q(/home/eash/download/Komodo-PerlRemoteDebugging-8.0.2-78971-linux-x86_64/perl5db.pl)}"
+    let $PERLDB_OPTS="RemotePort=localhost:9000"
+
+    exec 'split term://perl -d' a:cmd
+endfunction
+command! -nargs=1 -buffer PerlDebug call PerlDebug(<f-args>) 

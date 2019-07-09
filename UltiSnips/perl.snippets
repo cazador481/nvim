@@ -1,25 +1,20 @@
+snippet self "my self"
+my $self=shift;
+
+endsnippet
+
 snippet try "try catch"
-try
-{
-	$1
+try {
+	${1:${VISUAL}}
 }
-catch
-{
+catch {
+	my $error=$_;
 	$2;
 };
 endsnippet
 
-snippet "^option $" "Moose has" rbA
-option $1 => ( 
-   is => $2,
-   isa => $3,
-   default=>$4,
-   documentation=>$5,
-);
-endsnippet
-
 snippet "^\s*DDP $" "Data::Printer" rbA
-use Data::Printer; p $1;
+use Data::Printer {class=>{expand=>1}}; p($1);
 endsnippet
 snippet "^attr $" "Attribute pod" rbA
 =attr $1
@@ -30,30 +25,41 @@ endsnippet
 
 snippet "^hro $" "has ro" rbA
 has $1 => ( 
-   is => 'ro',
-   isa => $2,
-   default=>$3,
-   documentation=>$4,
+    is => 'ro',
+    isa => $2,
+    default=>$3,
+    documentation=>$4,
 );
 endsnippet
 
 snippet "^hlazy $" "has lazy" rbA
 has $1 => ( 
-   is => 'lazy',
-   isa => $2,
-   default=>$3,
-   documentation=>$4,
+    is => 'lazy',
+    isa => $2,
+    default=>$3,
+    documentation=>$4,
 );
 endsnippet
 
-snippet "^has $" "Moose has" rbA
+snippet "^has $" "Moose has" "re.match('has $',snip.buffer[snip.line])" rbeA
 has $1 => ( 
-   is => $2,
-   isa => $3,
-   default=>$4,
-   documentation=>$5,
+    is => $2,
+    isa => $3,
+    default=>$4,
+    documentation=>$5,
 );
 endsnippet
+
+snippet "^option $" "Moose option" "re.match('option $',snip.buffer[snip.line])" rbeA
+option $1 => ( 
+    is => $2,
+    isa => $3,
+    format=>$4
+    default=>$5,
+    documentation=>$6,
+);
+endsnippet
+
 
 snippet method "sub method"
 =method $1
@@ -99,7 +105,7 @@ snippet "^#!" "run perl" rbA
 endsnippet
 
 snippet modulino
-use lib '/home/nv/utils/perl-modules/NV-MooX-Modulino/1.0.3/lib/perl5/';
+use lib '/home/nv/utils/perl-modules/NV-MooX-Modulino/1.1.1/lib/perl5/';
 
 package $1;
 use Moo;
@@ -107,10 +113,6 @@ use MooX::Options author=>'Edward Ash <eash@nvidia.com>';
 with 'NV::MooX::Modulino';
 with 'MooX::Log::Any'; # enables ->log from Log::Any, optional
 with 'NV::MooX::Modulino::Log4perl'; #enables log4perl, optional
-#work around issue with Moox and type tiny  https://github.com/tobyink/p5-type-tiny/pull/27
-$Error::TypeTiny::CarpInternal{Method::Generate::Constructor}=1;
-$Error::TypeTiny::CarpInternal{Method::Generate::Accessor}=1;
-$Error::TypeTiny::CarpInternal{MooX::Options::Role}=1;
 
 #this gets run 
 sub run  {
@@ -118,7 +120,7 @@ sub run  {
 } 
 
 
-$1->_modulino({},caller);
+__PACKAGE__->_modulino({},caller);
 endsnippet
 
 
@@ -159,6 +161,29 @@ __PACKAGE__->has_many(
 endsnippet
 
 snippet check "Type::Tiny check"
-my ($self,$args) = $check->(@_);
+	my $self=shift;
+	state $check=compile_named($1);
+	my ($args) = $check->(@_);
+endsnippet
+
+snippet package "package expansion"
+package `!p ea=re.sub(r"^.*lib/(?:perl5/)?","",path).replace("/","::")
+ea=re.sub(r"\..*","",ea)
+snip.rv=ea`;
+endsnippet
+
+#######################
+#Testing snippets
+snippet subtest "subtest"
+subtest $1 => sub {
+	$2
+};
+endsnippet
+
+
+snippet "^\s*subtest \S+ " "subtest" "re.match(r'\s*subtest (\S+) $',snip.buffer[snip.line])" rbeA
+subtest `!p snip.rv=snip.context.group(1)` => sub {
+	$1
+};
 endsnippet
 

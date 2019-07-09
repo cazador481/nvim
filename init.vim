@@ -84,10 +84,10 @@ NeoBundle 'ap/vim-buftabline'
 NeoBundle 'SirVer/ultisnips'
 "NeoBundle 'http://github.com/nathanaelkane/vim-indent-guides.git'
 NeoBundle 'perrywky/vim-matchit'
-NeoBundle 'tmsvg/pear-tree'
-let g:pear_tree_tree_smart_openers = 1
-let g:pear_tree_smart_closers = 1
-let g:pear_tree_smart_backspace = 0 
+" NeoBundle 'tmsvg/pear-tree'
+" let g:pear_tree_tree_smart_openers = 1
+" let g:pear_tree_smart_closers = 1
+" let g:pear_tree_smart_backspace = 0 
 
 " NeoBundle 'kurkale6ka/vim-pairs'  "Punctuation text objects
 " let g:AutoPairsMultilineClose=0
@@ -207,7 +207,8 @@ set equalalways
 
 set isfname-==
 
-set diffopt+=iwhite " ignores white space
+set diffopt+=iwhiteall " ignores white space
+set diffopt+=internal,algorithm:patience
 set diffopt+=icase " ignores case
 set diffopt+=filler " create filler lines
 set diffexpr=DiffW()
@@ -299,28 +300,24 @@ if ! has('nvim')
 endif
 "}}}
 
-"{{{ remap meta keys for enhcomentify
-"map <C-c> <M-c> 
-"}}}
-
 if neobundle#tap('ultisnips') " {{{
     let g:UltiSnipSnippetsDir=bundle_path."/UltiSnips"
     let g:UltiSnipsExpandTrigger="<c-f>"
-    let g:UltiSnipsJumpForwardTrigger="<c-f>"
+    let g:UltiSnipsJumpForwardTrigger="<c-j>"
     let g:UltiSnipsJumpBackwardTrigger="<c-k>"
     let g:UltiSnipsEditSplit="vertical"
 
     " #ultisnips and unite {{{
-    function! UltiSnipsCallUnite()
-        Unite -start-insert -winheight=100 -immediately -no-empty ultisnips
-        return ''
-    endfunction
+    " function! UltiSnipsCallUnite()
+        " Unite -start-insert -winheight=100 -immediately -no-empty ultisnips
+        " return ''
+    " endfunction
 
-    inoremap <silent> <F12> <C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
-    nnoremap <silent> <F12> a<C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
+    " inoremap <silent> <F12> <C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
+    " nnoremap <silent> <F12> a<C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
     "}}}
     "ultisnips causes neovim to crash
-    let g:deoplete#ignore_sources = ['ultisnips']
+    " let g:deoplete#ignore_sources = ['ultisnips']
 endif
 "}}}
 
@@ -400,10 +397,8 @@ endif
 "}}}
 
 "quick saving {{{
-map <silent> <Leader>w :update<CR>
-imap <silent> <Leader>w <C-o>:update<CR>
+nmap <silent> <Leader>w :update<CR>
 "}}}
-
 "black hole mapping {{{
 "#to delete text object, put type text object shortcut after command
 nmap <leader>d "_d"
@@ -414,7 +409,6 @@ set hidden
 nnoremap <C-LEFT> :bp<CR>
 nnoremap <C-RIGHT> :bn<CR>
 "}}}
-"
 
 "{{{ middle mouse map
 noremap <S-Insert> <MiddleMouse>
@@ -595,4 +589,8 @@ let g:LanguageClient_autoStart=0
 if has ('nvim')
     let $VISUAL='nvr -cc split --remote-wait'
 endif
+
+" Deal with the case when i hit :W by accident
+command W w
+
 " vim: set fdm=marker:
