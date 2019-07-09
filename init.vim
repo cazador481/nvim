@@ -162,7 +162,6 @@ NeoBundle 'avakhov/vim-yaml', {'on_ft': 'yaml'}
 NeoBundle 'wellle/targets.vim' " additional  text objects
 NeoBundle 'tpope/vim-obsession'
 "NeoBundle 'jszakmeister/vim-togglecursor'
-NeoBundle 'theevocater/vim-perforce'
 NeoBundle 'sjl/splice.vim.git'      , {'on_cmd': 'SpliceInit'}
 NeoBundle 'vim-scripts/AnsiEsc.vim' , {'on_cmd': ['AnsiEsc'    , 'AnsiEsc!']} "evals ansi escape codes.
 NeoBundle 'junegunn/fzf'
@@ -177,7 +176,7 @@ let g:localvimrc_sandbox=0
 
 " shows what the hi is under the cursor
 " NeoBundle 'kergoth/vim-hilinks'
-NeoBundle 'vim-vdedebug/vdebug'
+NeoBundle 'vim-vdebug/vdebug'
 
 call neobundle#end()
 "
@@ -565,7 +564,7 @@ au BufNewFile,BufRead *.tt setf tt2
 "{{{ Python paths for work
 if filereadable('/home/utils/Python-2.7.9/bin/python') 
     let g:python_host_prog='/home/utils/Python-2.7.9/bin/python'
-    let g:python3_host_prog='/home/utils/Python-3.6.1/bin/python3'
+    let g:python3_host_prog='/home/utils/Python-3.7.3/bin/python3'
     let g:deoplete#sources#jedi#python_path=g:python3_host_prog
 endif
 "}}}
