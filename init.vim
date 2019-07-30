@@ -239,6 +239,10 @@ set timeoutlen  =300  " How mutch to wait after leaderkey to timeout
 set lazyredraw
 set synmaxcol=255 " syntax coloring long lines slows down the word
 
+"{{{ highlight extra spaces
+highlight RedundantSpaces ctermbg=red guibg=red 
+match RedundantSpaces /\s\+$/
+"}}}
 map <S-Enter> O<ESC>
 map <Enter> o<Esc>
 
