@@ -563,7 +563,7 @@ au BufNewFile,BufRead *.tt setf tt2
 "{{{ Python paths for work
 if filereadable('/home/utils/Python-2.7.9/bin/python') 
     let g:python_host_prog='/home/utils/Python-2.7.9/bin/python'
-    let g:python3_host_prog='/home/utils/Python-3.6.1/bin/python3'
+    let g:python3_host_prog='/home/utils/Python-3.7.3/bin/python3'
     let g:deoplete#sources#jedi#python_path=g:python3_host_prog
 endif
 "}}}
