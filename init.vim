@@ -1,68 +1,42 @@
-"autoinstall neobundle {{{
+" autoinstall vim-plug "{{{
 
-let g:neobundle#types#git#default_protocol='https'
-let iCanHazBundle=1
-if (empty($XDG_CONFIG_HOME))
-    let bundle_path=expand('~').'/.config/nvim/bundle'
-else
-    let bundle_path=$XDG_CONFIG_HOME.'/nvim/bundle'
+if empty(glob($XDG_CONFIG_HOME."/autoload/plug.vim"))
+  silent !curl -fLo $XDG_CONFIG_HOME/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
-
-let bundle_readme=bundle_path."/neobundle/README.md"
-" let bundle_readme=expand('~/.nvim/bundle/neobundle/README.md')
-if !filereadable(bundle_readme)
-
-    echo "Installing Neobundle.."
-    echo ""
-    if has("unix")
-        silent execute '!mkdir -p ' . bundle_path
-        silent execute '!git clone https://github.com/Shougo/neobundle.vim.git ' . bundle_path. '/neobundle'
-    elseif (match(hostname(),"ELASH1-MOBL") >=0)
-        silent !mkdir /home/elash1/.nvim/bundle
-        silent !git clone https://github.com/Shougo/neobundle.vim.git /home/elash1/.nvim/bundle/neobundle
-    else
-        silent !mkdir c:\home\eddie\.vim\bundle
-        silent !git clone https://github.com/Shougo/neobundle.vim.git \home\eddie\.vim\bundle\neobundle
-    endif
-    let iCanHazBundle=0
-endif
-execute 'set rtp+='.bundle_path.'/neobundle'
-set rtp+=/home/eash/.linuxbrew/opt/fzf
-call neobundle#begin(bundle_path)
 "}}}
-NeoBundleFetch 'Shougo/neobundle'
+
+set rtp+=/home/eash/.linuxbrew/opt/fzf
 "Add your bundles here
 "General bundles here {{{
-NeoBundle 'benekastah/neomake'
-NeoBundle 'godlygeek/tabular', { 'on_cmd': 'Tabularize'}
+call plug#begin($XDG_CONFIG_HOME.'/nvim/bundle')
+Plug 'benekastah/neomake'
+Plug 'godlygeek/tabular', { 'on': 'Tabularize'}
 "file modification commands, like Unlink, Move
-NeoBundle 'tpope/vim-eunuch', { 'on_cmd' : [ 'Rename', 'Unlink', 'Move', 'Remove', 'Chmod', 'Mkdir', 'Find','Locate','Wall','SudoWrite','SudoEdit']}
+Plug 'tpope/vim-eunuch', { 'on' : [ 'Rename', 'Unlink', 'Move', 'Remove', 'Chmod', 'Mkdir', 'Find','Locate','Wall','SudoWrite','SudoEdit']}
 
-NeoBundle 'tpope/vim-fugitive', {'augroup' : 'fugitive'}
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'tpope/vim-dispatch'
+Plug 'tpope/vim-fugitive', {'augroup' : 'fugitive'}
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-dispatch'
 "should bundle menu
 " NeoBundle 'mbadran/headlights'
 
 "new Filetypes {{{
-NeoBundle 'cazador481/vim-nfo'
-NeoBundle 'cazador481/vim-systemc', {'on_ft' : ['c', 'cpp']}
+Plug 'cazador481/vim-nfo'
+"Plug 'cazador481/vim-systemc', {'for' : ['c', 'cpp']}
 "}}}
-NeoBundle 'tpope/vim-repeat'
-NeoBundle 'tomtom/tcomment_vim'
+Plug 'tpope/vim-repeat'
+Plug 'tomtom/tcomment_vim'
 "TMUX {{{
 "TODO check for TMUX env set to enable
-NeoBundleLazy 'brauner/vimtux'
-NeoBundleLazy 'christoomey/vim-tmux-navigator'
-" Disable tmux navigator when zooming the Vim pane
-let g:tmux_navigator_disable_when_zoomed = 1
-NeoBundleLazy 'tmux-plugins/vim-tmux-focus-events'
-NeoBundle 'tmux-plugins/vim-tmux'
-
 if !empty($TMUX)
-    NeoBundleSource vimtux
-    NeoBundleSource vim-tmux-navigator
-    NeoBundleSource vim-tmux-focus-events
+    Plug 'brauner/vimtux'
+    Plug 'christoomey/vim-tmux-navigator'
+    " Disable tmux navigator when zooming the Vim pane
+    let g:tmux_navigator_disable_when_zoomed = 1
+    Plug 'tmux-plugins/vim-tmux-focus-events'
+    Plug 'tmux-plugins/vim-tmux'
+
 
     " update display environment and SSH env variables
     function! Tmux_display()
@@ -80,77 +54,72 @@ endif
 "}}}
 
 " NeoBundle 'http://github.com/vim-scripts/taglist.vim'
-NeoBundle 'ap/vim-buftabline'
-NeoBundle 'SirVer/ultisnips'
+Plug 'ap/vim-buftabline'
+Plug 'SirVer/ultisnips'
 "NeoBundle 'http://github.com/nathanaelkane/vim-indent-guides.git'
-NeoBundle 'perrywky/vim-matchit'
-" NeoBundle 'tmsvg/pear-tree'
-" let g:pear_tree_tree_smart_openers = 1
-" let g:pear_tree_smart_closers = 1
-" let g:pear_tree_smart_backspace = 0 
+Plug 'perrywky/vim-matchit'
 
-" NeoBundle 'kurkale6ka/vim-pairs'  "Punctuation text objects
-" let g:AutoPairsMultilineClose=0
-
-NeoBundle 'derekwyatt/vim-protodef', { 'on_ft': ['c', 'cpp', 'h']}
+Plug 'derekwyatt/vim-protodef', { 'for': ['c', 'cpp', 'h']}
 " NeoBundle 'http://github.com/vim-scripts/FSwitch'
-NeoBundle 'kana/vim-textobj-user'
-NeoBundle 'thinca/vim-textobj-function-perl' , {'depends': 'kana/vim-textobj-function','on_ft': 'perl'} " perl text object
-NeoBundle 'glts/vim-textobj-comment'        , {'depends': 'kana/vim-textobj-user'}
-NeoBundle 'vimtaku/vim-textobj-sigil'        , {'depends': 'kana/vim-textobj-user'}
-NeoBundle 'paulhybryant/vim-textobj-path'    , {'depends': 'kana/vim-textobj-user'}
-NeoBundleLazy 'xolox/vim-reload'             , {'depends': 'xolox/vim-misc' }
-autocmd FileType vim NeoBundleSource vim-reload
-" NeoBundle 'mattn/gist-vim', {'depends' : 'mattn/webapi-vim' }
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-function'
+Plug 'thinca/vim-textobj-function-perl' , {'for': 'perl'} " perl text object
+Plug 'glts/vim-textobj-comment'
+Plug 'vimtaku/vim-textobj-sigil'
+Plug 'paulhybryant/vim-textobj-path'
 
-NeoBundle 'vim-scripts/dbext.vim', { 'on_ft' : 'sql'}
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-reload', {'for': 'vim'}
+
+Plug 'vim-scripts/dbext.vim', { 'for' : 'sql'}
 
 
 "
 " NeoBundle 'luochen1990/rainbow'
-NeoBundle 'Shougo/vimproc', {
-\ 'build'       : {
-\     'windows' : 'make -f make_mingw32.mak',
-\     'cygwin'  : 'make -f make_cygwin.mak',
-\     'mac'     : 'make -f make_mac.mak',
-\     'unix'    : 'make -f make_unix.mak',
-\    }, }
+" Plug 'Shougo/vimproc', { 'do'       :  'make -f make_unix.mak'    }
+" NeoBundle 'Shougo/vimproc', {
+" \ 'build'       : {
+" \     'windows' : 'make -f make_mingw32.mak',
+" \     'cygwin'  : 'make -f make_cygwin.mak',
+" \     'mac'     : 'make -f make_mac.mak',
+" \     'unix'    : 'make -f make_unix.mak',
+" \    }, }
 "NeoBundle 'vim-scripts/octave.vim--'
 "Better diff handling
-NeoBundle 'chrisbra/vim-diff-enhanced'
-NeoBundle 'Shougo/context_filetype.vim' " perlomni needs
-NeoBundle 'Shougo/deoplete.nvim', {'on_i': 1}
-NeoBundle 'zchee/deoplete-zsh', {'on_ft': 'zsh'}
+Plug 'chrisbra/vim-diff-enhanced'
+Plug 'Shougo/context_filetype.vim' " perlomni needs
+Plug 'Shougo/deoplete.nvim' " #, {'on_i': 1}
+Plug 'zchee/deoplete-zsh', {'for': 'zsh'}
 if !empty($TMUX)
-    NeoBundle 'wellle/tmux-complete.vim'
+    Plug 'wellle/tmux-complete.vim'
 endif
 
-NeoBundle 'Shougo/neco-syntax'
-NeoBundle 'Shougo/neco-vim'
+Plug 'Shougo/neco-syntax'
+Plug 'Shougo/neco-vim'
 " NeoBundle 'Shougo/neoinclude'
 "}}}
 "
 "{{{ Python budles
-" NeoBundle 'zchee/deoplete-jedi', { 'on_ft' : 'python'}
-NeoBundle 'klen/python-mode.git', { 'on_ft' : 'python'}
+" NeoBundle 'zchee/deoplete-jedi', { 'for' : 'python'}
+Plug 'klen/python-mode', { 'for' : 'python'}
 let g:pymode_rope_completion=0
 let g:pymode_rope_completion_on_dot=0
 "}}}
-NeoBundle 'airblade/vim-rooter' " finds the root dir
+Plug 'airblade/vim-rooter' " finds the root dir
 "
 "perl bundles {{{
-NeoBundle 'https://raw.githubusercontent.com/thoughtstream/Damian-Conway-s-Vim-Setup/master/plugin/trackperlvars.vim', {'on_ft': 'perl', 'type' : 'raw' ,'script_type' : 'plugin'}
-NeoBundle 'vim-perl/vim-perl', {'on_ft': 'perl'}
+"Plug 'https://raw.githubusercontent.com/thoughtstream/Damian-Conway-s-Vim-Setup/master/plugin/trackperlvars.vim', {'for': 'perl', 'type' : 'raw' ,'script_type' : 'plugin'}
+Plug 'vim-perl/vim-perl', {'for': 'perl'}
 
 "deoplete perl omni completion, better than anything out there at themoment, still a little flaky
-NeoBundle 'cazador481/perlomni.vim', {'on_ft': 'perl'}
+Plug 'cazador481/perlomni.vim', {'for': 'perl'}
 
-NeoBundle 'catalinciurea/perl-nextmethod', {'on_ft': 'perl'} "enables [M, [m, ]M,]m
+Plug 'catalinciurea/perl-nextmethod', {'for': 'perl'} "enables [M, [m, ]M,]m
 "NeoBundle 'http://github.com/cazador481/vim-cute-perl.git'
 "}}}
 
 "{{{color schemes
-NeoBundle 'cazador481/ea_color'
+Plug 'cazador481/ea_color'
 " NeoBundle 'tpope/vim-vividchalk'
 " NeoBundle 'chriskempson/vim-tomorrow-theme'
 " NeoBundle 'godlygeek/csapprox'
@@ -158,38 +127,37 @@ NeoBundle 'cazador481/ea_color'
 " NeoBundle 'w0ng/vim-hybrid'
 "}}}
 
-NeoBundle 'avakhov/vim-yaml', {'on_ft': 'yaml'}
-NeoBundle 'wellle/targets.vim' " additional  text objects
-NeoBundle 'tpope/vim-obsession'
+Plug 'avakhov/vim-yaml', {'for': 'yaml'}
+Plug 'wellle/targets.vim' " additional  text objects
+Plug 'tpope/vim-obsession'
 "NeoBundle 'jszakmeister/vim-togglecursor'
-NeoBundle 'theevocater/vim-perforce'
-NeoBundle 'sjl/splice.vim.git'      , {'on_cmd': 'SpliceInit'}
-NeoBundle 'vim-scripts/AnsiEsc.vim' , {'on_cmd': ['AnsiEsc'    , 'AnsiEsc!']} "evals ansi escape codes.
-NeoBundle 'junegunn/fzf'
-NeoBundle 'junegunn/fzf.vim'        , {'on_cmd' : ['Files'     , 'Buffers', 'Lines','Ag']}
+Plug 'theevocater/vim-perforce'
+Plug 'sjl/splice.vim'      , {'on': 'SpliceInit'}
+Plug 'vim-scripts/AnsiEsc.vim' , {'on': ['AnsiEsc'    , 'AnsiEsc!']} "evals ansi escape codes.
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'        , {'on' : ['Files'     , 'Buffers', 'Lines','Ag']}
 
-NeoBundle 'jiangmiao/auto-pairs.git'
+Plug 'jiangmiao/auto-pairs'
 "NeoBundle 'autozimu/LanguageClient-neovim'
-NeoBundle 'embear/vim-localvimrc'
+Plug 'embear/vim-localvimrc'
 let g:localvimrc_ask=0
 let g:localvimrc_whitelist=['/home/eash/.*','/home/scratch.eash/.*']
 let g:localvimrc_sandbox=0
 
 " shows what the hi is under the cursor
 " NeoBundle 'kergoth/vim-hilinks'
-NeoBundle 'vim-vdedebug/vdebug'
+"Plug 'vim-vdedebug/vdebug'
+call plug#end()
 
-call neobundle#end()
-"
-if neobundle#tap('neobundle')
-    NeoBundleCheck
-endif
+" call neobundle#end()
+" "
+" if neobundle#tap('neobundle')
+"     NeoBundleCheck
+" endif
 set exrc
 filetype plugin indent on
 
-if neobundle#is_installed('ea_color') "{{{
-    color ea
-endif "}}}
+color ea
 set visualbell
 set termguicolors
 set tags=tags
@@ -304,8 +272,9 @@ if ! has('nvim')
 endif
 "}}}
 
-if neobundle#tap('ultisnips') " {{{
-    let g:UltiSnipSnippetsDir=bundle_path."/UltiSnips"
+" {{{ ultisnips
+
+    let g:UltiSnipSnippetsDir=$XDG_CONFIG_HOME."/nvim/UltiSnips"
     let g:UltiSnipsExpandTrigger="<c-f>"
     let g:UltiSnipsJumpForwardTrigger="<c-j>"
     let g:UltiSnipsJumpBackwardTrigger="<c-k>"
@@ -322,12 +291,8 @@ if neobundle#tap('ultisnips') " {{{
     "}}}
     "ultisnips causes neovim to crash
     " let g:deoplete#ignore_sources = ['ultisnips']
-endif
 "}}}
 
-if neobundle#tap('rainbow') "{{{
-    let g:rainbow_active=1
-endif
 "}}}
 "indent_guides {{{
 let g:indent_guides_start=1
@@ -335,49 +300,8 @@ let g:indent_guides_guide_size=1
 let g:indent_guides_enable_on_vim_startup=1
 "}}}
 
-" if has("multi_byte")  "{{{ 
-        " if &termencoding == ""
-            " let &termencoding = &encoding
-"         endif
-" endif "}}}
 
-if neobundle#tap('unite.vim') "{{{
-    call unite#filters#matcher_default#use(['matcher_fuzzy'])
-    " noremap <C-p> :execute 'Unite -start-insert file_rec/async:'.unite#util#path2project_directory(findfile("TOT",getcwd().";"))<cr> 
-    noremap <C-p> :execute 'Unite -start-insert file_rec/async:'<cr> 
-    noremap <leader>b :Unite -start-insert buffer <cr>
-    " let g:unite_source_grep_command = 'ag --ignore .build'
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '--line-numbers --nocolor --nogroup --smart-case'
-    "let g_unite_source_file_rec_max_cache_files=0
-    call unite#custom#source('file_rec,file_rec/async','max_candidates',0)
-    call unite#custom#source('file_rec,file_rec/async','ignore_pattern','\.rel')
-    "nnoremap <leader>fc :<C-u>Unite -start-insert -no-split -buffer-name=file_vcs file/vcs<CR> 
-    "VCS file mapping 
-    " show executed commmand
-    " define shortcut so that I can use :Unite ack:g:some_method to search some_method from gem directory
-
-    function! s:escape_visual(...) "{{{
-        let escape = a:0 ? a:1 : ''
-        normal `<
-        let s = col('.') - 1
-        normal `>
-        let e = col('.') - 1
-        let line = getline('.')
-        let pat = line[s : e]
-        return escape(pat, escape)
-    endfunction"}}}
-    function! s:visual_unite_input() "{{{
-        return s:escape_visual(" ")
-    endfunction"}}}
-    function! s:visual_unite_arg() "{{{
-        return s:escape_visual(' :\')
-    endfunction"}}}
-endif
-
-"}}}
-
-if neobundle#tap('deoplete.nvim') "{{{
+"{{{ deoplete
     
     let g:deoplete#enable_profile = 1
 	let g:deoplete#enable_at_startup= 1
@@ -397,7 +321,6 @@ if neobundle#tap('deoplete.nvim') "{{{
 	    let col = col('.') - 1
 	    return !col || getline('.')[col - 1]  =~ '\s'
 	  endfunction"}}}
-endif
 "}}}
 
 "quick saving {{{
@@ -425,29 +348,25 @@ noremap! <C-S-Insert> <MiddleMouse>
 if executable("ag")
     set grepprg=ag\ --nogroup\ --nocolor\ 
     let g:unite_source_rec_async_command= ['ag', '--nocolor', '--nogroup','-g', '']
-    if neobundle#tap('ctrlp.vim') "{{{
-        let g:ctrlp_user_command='ag %s -l --nocolor -g ""'
-    endif
-    "}}}
 endif "}}}
 
-if neobundle#tap('vim-buftabline') "{{{
-    let g:buftabline_numbers=1 " enable numbering
+"{{{a vim-buftabline
+let g:buftabline_numbers=1 " enable numbering
 
 
 
-endif "}}}
+"}}}
 
 let g:sql_type_default='mysql'
 
 
-if neobundle#tap('dbext.vim') "{{{
+"{{{ dbext.vim
     let g:dbext_default_profile_fullchip_ro= 'type=MYSQL:user=fullchipsims_ro:passwd=CB2ea79!:dbname=gpu_fullchip_sims:host=gpu-db-gpufullchipsims-read'
     let g:dbext_default_profile_fullchip_dev= 'type=MYSQL:user=fullchipsims_dev:passwd=dev:dbname=GPUFullchipSims:host=gpu-db-gpufullchipsims-dev'
     let g:dbext_default_profile_golden_dev= 'type=MYSQL:user=goldecl_usr:passwd=iMsTj6Fe:dbname=GoldenCl:host=gpu-db-goldencl-dev'
     let g:dbext_default_profile_golden_prod= 'type=MYSQL:user=goldecl_usr:passwd=IcTPA73w:dbname=GoldenCl:host=gpu-db-goldencl-write'
 
-endif "}}}
+"}}}
 
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o "Makes copying and pasting using mosh work better
 
