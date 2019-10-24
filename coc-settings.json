@@ -1,0 +1,5 @@
+{
+    "python.formatting.blackPath": "/home/eash/.local/bin/black",
+    "python.jediEnabled": false,
+    "codeLens.enable": true,
+}

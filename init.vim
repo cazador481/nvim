@@ -10,7 +10,8 @@ set rtp+=/home/eash/.linuxbrew/opt/fzf
 "Add your bundles here
 "General bundles here {{{
 call plug#begin($XDG_CONFIG_HOME.'/nvim/bundle')
-Plug 'benekastah/neomake'
+" Plug 'benekastah/neomake'
+Plug 'dense-analysis/ale'
 Plug 'godlygeek/tabular', { 'on': 'Tabularize'}
 "file modification commands, like Unlink, Move
 Plug 'tpope/vim-eunuch', { 'on' : [ 'Rename', 'Unlink', 'Move', 'Remove', 'Chmod', 'Mkdir', 'Find','Locate','Wall','SudoWrite','SudoEdit']}
@@ -73,22 +74,11 @@ Plug 'xolox/vim-reload', {'for': 'vim'}
 
 Plug 'vim-scripts/dbext.vim', { 'for' : 'sql'}
 
-
-"
-" NeoBundle 'luochen1990/rainbow'
-" Plug 'Shougo/vimproc', { 'do'       :  'make -f make_unix.mak'    }
-" NeoBundle 'Shougo/vimproc', {
-" \ 'build'       : {
-" \     'windows' : 'make -f make_mingw32.mak',
-" \     'cygwin'  : 'make -f make_cygwin.mak',
-" \     'mac'     : 'make -f make_mac.mak',
-" \     'unix'    : 'make -f make_unix.mak',
-" \    }, }
 "NeoBundle 'vim-scripts/octave.vim--'
 "Better diff handling
 Plug 'chrisbra/vim-diff-enhanced'
 Plug 'Shougo/context_filetype.vim' " perlomni needs
-Plug 'Shougo/deoplete.nvim' " #, {'on_i': 1}
+"Plug 'Shougo/deoplete.nvim' " #, {'on_i': 1}
 Plug 'zchee/deoplete-zsh', {'for': 'zsh'}
 if !empty($TMUX)
     Plug 'wellle/tmux-complete.vim'
@@ -96,14 +86,16 @@ endif
 
 Plug 'Shougo/neco-syntax'
 Plug 'Shougo/neco-vim'
+Plug 'neoclide/coc-neco'
 " NeoBundle 'Shougo/neoinclude'
 "}}}
 "
 "{{{ Python budles
 " NeoBundle 'zchee/deoplete-jedi', { 'for' : 'python'}
-Plug 'klen/python-mode', { 'for' : 'python'}
+" Plug 'klen/python-mode', { 'for' : 'python'}
 let g:pymode_rope_completion=0
 let g:pymode_rope_completion_on_dot=0
+Plug 'ambv/black', {'for': 'python'}
 "}}}
 Plug 'airblade/vim-rooter' " finds the root dir
 "
@@ -144,16 +136,12 @@ let g:localvimrc_ask=0
 let g:localvimrc_whitelist=['/home/eash/.*','/home/scratch.eash/.*']
 let g:localvimrc_sandbox=0
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " shows what the hi is under the cursor
 " NeoBundle 'kergoth/vim-hilinks'
 "Plug 'vim-vdedebug/vdebug'
 call plug#end()
 
-" call neobundle#end()
-" "
-" if neobundle#tap('neobundle')
-"     NeoBundleCheck
-" endif
 set exrc
 filetype plugin indent on
 
@@ -175,11 +163,11 @@ set equalalways
 
 set isfname-==
 
-set diffopt+=iwhiteall " ignores white space
+"set diffopt+=iwhiteall " ignores white space
 set diffopt+=internal,algorithm:patience
 set diffopt+=icase " ignores case
 set diffopt+=filler " create filler lines
-set diffexpr=DiffW()
+"set diffexpr=DiffW()
 function! DiffW()
   let opt = ""
    if &diffopt =~ "icase"
@@ -200,12 +188,15 @@ set noincsearch
 set sidescroll=1 " scrolls by one when you go left on no wordwrap
 set linebreak " this causes the wrapping to happen at the word boundary 
 "    set ttimeoutlen =50
-set timeoutlen  =300  " How mutch to wait after leaderkey to timeout
+set timeoutlen=300  " How mutch to wait after leaderkey to timeout
 "    set matchtime   =0
 "endif
 "general things to speed up vim
 set lazyredraw
 set synmaxcol=255 " syntax coloring long lines slows down the word
+
+" you will have a bad experinece for diagnostic messages when it's default 4000
+set updatetime=300
 
 "{{{ highlight extra spaces
 highlight RedundantSpaces ctermbg=red guibg=red 
@@ -280,17 +271,6 @@ endif
     let g:UltiSnipsJumpBackwardTrigger="<c-k>"
     let g:UltiSnipsEditSplit="vertical"
 
-    " #ultisnips and unite {{{
-    " function! UltiSnipsCallUnite()
-        " Unite -start-insert -winheight=100 -immediately -no-empty ultisnips
-        " return ''
-    " endfunction
-
-    " inoremap <silent> <F12> <C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
-    " nnoremap <silent> <F12> a<C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
-    "}}}
-    "ultisnips causes neovim to crash
-    " let g:deoplete#ignore_sources = ['ultisnips']
 "}}}
 
 "}}}
@@ -303,8 +283,8 @@ let g:indent_guides_enable_on_vim_startup=1
 
 "{{{ deoplete
     
-    let g:deoplete#enable_profile = 1
-	let g:deoplete#enable_at_startup= 1
+    let g:deoplete#enable_profile = 0
+	let g:deoplete#enable_at_startup= 0
     "call deoplete#enable_logging("DEBUG","/tmp/deoplete.log")
     let g:deocomplete#auto_completion_start_length=0
     let g:deoplete#ignore_sources={}
@@ -317,7 +297,8 @@ let g:indent_guides_enable_on_vim_startup=1
 	inoremap <expr><TAB>  pumvisible() ? "\<C-n>" :
 	        \ <SID>check_back_space() ? "\<TAB>" :
 	        \ deoplete#mappings#manual_complete()
-	  function! s:check_back_space() "{{{
+
+	  function! s:check_back_space() abort"{{{
 	    let col = col('.') - 1
 	    return !col || getline('.')[col - 1]  =~ '\s'
 	  endfunction"}}}
@@ -371,19 +352,25 @@ let g:sql_type_default='mysql'
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o "Makes copying and pasting using mosh work better
 
 
+"{{{ Ale
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_enter = 1
+
+""}}}
+
 "{{{ NEOMAKE
-let g:neomake_perl_perlc_maker = {
-            \ 'exe': '/home/eash/scripts/perlc',
-            \ 'buffer_output': 0,
-            \ 'errorformat': 
-            \ '%m at %f line %l%s,'.
-            \ '%-G%.%#had\ compilation\ errors.,'. 
-            \ '%-G%.%#syntax\ OK'
- \}
-" When writing a buffer, and on normal mode changes (after 750ms).
-call neomake#configure#automake('nw', 750)
-let g:neomake_perl_enabled_makers=['perlc', 'perlcritic']
-            " \ 'arg' : ['--quiet --nocolor --verbose "\%s:\%f:\%l:\%c:(\%s) \%m (\%e)\n"'],
+" let g:neomake_perl_perlc_maker = {
+"             \ 'exe': '/home/eash/scripts/perlc',
+"             \ 'buffer_output': 0,
+"             \ 'errorformat': 
+"             \ '%m at %f line %l%s,'.
+"             \ '%-G%.%#had\ compilation\ errors.,'. 
+"             \ '%-G%.%#syntax\ OK'
+"  \}
+" " When writing a buffer, and on normal mode changes (after 750ms).
+" call neomake#configure#automake('nw', 750)
+" let g:neomake_perl_enabled_makers=['perlc', 'perlcritic']
+"             " \ 'arg' : ['--quiet --nocolor --verbose "\%s:\%f:\%l:\%c:(\%s) \%m (\%e)\n"'],
 "}}}
 
 "{{{makes jk go by line, except when proceded by number
@@ -396,7 +383,7 @@ nnoremap <silent> k :<c-u>call LineMotion("k")<cr>
 "}}}
 
 " if neobundle#tap('vim-rooter') "{{{
-    let g:rooter_patterns = ['dist.ini', 'TOT', '.git', '.git/', '.p4config']
+    let g:rooter_patterns = ['dist.ini', 'TOT', '.git', '.git/', '.p4config', 'Makefile']
     let g:rooter_use_lcd = 1
 " endif "}}}
 
@@ -516,4 +503,20 @@ endif
 " Deal with the case when i hit :W by accident
 command W w
 
+"{{{ coc mapping
+"	makes `<leader>p` format the visually selected range, and you can use `<leader>pap` to format a paragraph.
+vmap <leader>p  <Plug>(coc-format-selected)
+nmap <leader>p  <Plug>(coc-format-selected)
+
+command! -nargs=0 Format :call CocAction('format')
+
+"}}}
+"{{{Coc extensions
+call coc#add_extension('coc-ultisnips')
+call coc#add_extension('coc-syntax`')
+call coc#add_extension('coc-dictionary')
+call coc#add_extension('coc-json')
+call coc#add_extension('coc-python')
+
+""}}}
 " vim: set fdm=marker:
