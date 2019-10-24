@@ -122,7 +122,6 @@ Plug 'cazador481/ea_color'
 Plug 'avakhov/vim-yaml', {'for': 'yaml'}
 Plug 'wellle/targets.vim' " additional  text objects
 Plug 'tpope/vim-obsession'
-"NeoBundle 'jszakmeister/vim-togglecursor'
 Plug 'theevocater/vim-perforce'
 Plug 'sjl/splice.vim'      , {'on': 'SpliceInit'}
 Plug 'vim-scripts/AnsiEsc.vim' , {'on': ['AnsiEsc'    , 'AnsiEsc!']} "evals ansi escape codes.
@@ -417,7 +416,7 @@ function! Perldoc(...)
         set buflisted
         setlocal keywordprg=:Perldoc
     endif
-    
+
 endfunc
 
 "{{{=====[ Emphasize typical mistakes in Vim and Perl files ]=========
