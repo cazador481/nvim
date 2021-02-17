@@ -1,5 +1,21 @@
 {
-    "python.formatting.blackPath": "/home/eash/.local/bin/black",
-    "python.jediEnabled": false,
+    "coc.preferences.currentFunctionSymbolAutoUpdate":true,
+    "coc.preferences.formatOnSaveFiletypes": ["python"],
+    "coc.preferences.hoverTarget":"preview",
     "codeLens.enable": true,
+    "diagnostic.checkCurrentLine": true,
+    "diagnostic.displayByAle": true,
+    "diagnostic.refreshOnInsertMode": true,
+    "diagnostic.virtualText": true,
+    "python.formatting.blackPath": "/home/eash/.local/bin/black",
+    "python.formatting.provider":"black",
+    "python.jediEnabled": false,
+    "python.linting.flake8Enabled" : true,
+    "python.linting.mypyEnabled": true,
+    "python.sortImports.path": "isort",
+    "suggest.enablePreview":true,
+    // disables showing that black will modify the code
+    "python.linting.flake8Args": ["--ignore=BLK100,E222"],
+    "python.autoComplete.extraPaths": ["/home/nv/utils/perl-modules/p4server/1.2.1/lib/python3"],
+    "python.venvPath": ".venv"
 }

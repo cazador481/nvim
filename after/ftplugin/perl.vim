@@ -1,7 +1,8 @@
 setlocal equalprg =perltidy\ -q
 "setlocal keywordprg=$HOME/scripts/nv_perldoc
 setlocal keywordprg=:Perldoc
-setlocal path+=lib/,lib/perl5
+setlocal path+=lib/,lib/perl5,t/lib
+let g:ale_perl_perl_options = '-c  -It/lib -Ilib -I.'
 let perl_fold=1
 let perl_nofold_packages=1
 let perl_fold_anonymous_subs=1
@@ -12,13 +13,23 @@ nmap cv :call RenameVariable()<cr>
 set errorformat+=%m\ at\ %f\ line\ %l
 set errorformat+=%m\ at\ %f\ line\ %l\.
 
+syntax sync fromstart
 
 "{{{ abbreviation
 iabbrev <buffer> $s $self
 "}}}
 
+if filereadable('perlcritic.rc')
+    let b:ale_perl_perlcritic_profile = 'perlcritic.rc'
+endif
 
-command! -nargs=1 -buffer Perldoc call Perldoc(<f-args>) 
+if filereadable('perltidy.rc')
+    " let b:ale_perl_perltidy_options = get(b:,'ale_perl_perltidy_options','') . ' -pro perltidy.rc'
+    " let b:ale_perl_perltidy_options = '-pro perltidy.rc'
+endif
+" let g:ale_perl_perltidy_options='-c -mWarnings -Ilib -It/lib'
+
+command! -nargs=1 -buffer Perldoc call Perldoc(<f-args>)
 function! Perldoc(Method)
     let tmp=tempname()
     call system("nv_perldoc -onroff -d ".tmp." ".a:Method)
@@ -31,7 +42,7 @@ function! Perldoc(Method)
     exec "file man://".a:Method
     call delete(tmp)
     set buflisted
-    
+
 endfunc
 
 function! Get_pagePerldoc(bang, editcmd, ...) abort
