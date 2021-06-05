@@ -1,7 +1,9 @@
 let $LD_LIBRARY_PATH="/home/utils/icu4c-58.2/lib"
 "{{{autoinstall vim-plug 
 
-if empty(glob($XDG_CONFIG_HOME."/autoload/plug.vim"))
+
+"if empty(glob($XDG_CONFIG_HOME."/autoload/plug.vim"))
+if empty(glob(fnamemodify(expand("$MYVIMRC"), ":p:h")."/autoload/plug.vim"))
     silent !curl -fLo $XDG_CONFIG_HOME/nvim/autoload/plug.vim --create-dirs
                 \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
@@ -10,7 +12,7 @@ endif
 set rtp+=/home/eash/.linuxbrew/opt/fzf
 "Add your bundles here
 "General bundles here {{{
-call plug#begin($XDG_CONFIG_HOME.'/nvim/bundle')
+call plug#begin(fnamemodify(expand("$MYVIMRC"),":p:h").'/nvim/bundle')
 " Plug 'benekastah/neomake'
 Plug 'dense-analysis/ale'
 " Plug 'godlygeek/tabular', { 'on': 'Tabularize'}
