@@ -4,3 +4,6 @@ undodir
 .ropeproject
 .*~
 .netrwhist
+packer_compiled.lua
+package-lock.json
+node_modules/
